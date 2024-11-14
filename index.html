@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/index.css">
+    <title>M list | new list</title>
+</head>
+
+<body>
+    <!-- Modal for adding expenses -->
+    <div class="modal" id="addExpenseModal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModal">&times;</span>
+            <h2>บันทึกค่าใช้จ่าย</h2>
+
+            <label for="expenseName">รายการ:</label>
+            <input type="text" id="expenseName" placeholder="เช่น ค่าอาหาร">
+
+            <label for="amount">จำนวนเงิน:</label>
+            <input type="number" id="amount" placeholder="จำนวนเงิน">
+
+            <label for="friends">เพื่อนที่ร่วมจ่าย:</label>
+            <input type="text" id="friends" placeholder="ชื่อเพื่อน, คั่นด้วยลูกน้ำ">
+
+            <button class="submit-button" id="saveExpense">บันทึก</button>
+        </div>
+    </div>
+
+    <!-- Top navigation with profile picture -->
+    <div class="top-nav-bar">
+        <button id="profileButton" class="account-info">
+            <img id="profileImage" alt="บัญชี" width="32" height="32">
+        </button>
+        <div class="profile-menu" id="profileMenu">
+            <ul>
+                <li>Profile</li>
+                <li>Settings</li>
+                <li onclick="logout()">Logout</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Expense list -->
+    <div id="expenseList"></div>
+
+    <!-- Bottom navigation for adding new list -->
+    <div class="bottom-nav">
+        <button class="bottom-wide-button">+ add new list</button>
+    </div>
+
+    <script src="/src/js/main.js"></script>
+    <script src="/src/js/user.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileButton = document.getElementById("profileButton");
+            const profileMenu = document.getElementById("profileMenu");
+
+            profileButton.addEventListener("click", function () {
+                // Toggle visibility of the profile menu
+                profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
+            });
+
+            // Close the menu if clicked outside
+            document.addEventListener("click", function (event) {
+                if (!profileButton.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.style.display = "none";
+                }
+            });
+        });
+        function logout() {
+            // ลบ access token และทำ redirect ออกไปยังหน้า login
+            localStorage.removeItem('accessToken');
+            window.location.href = 'https://chakphet999.github.io';
+        }
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth 2.0 Callback</title>
+</head>
+<body>
+    <h2>Processing authentication...</h2>
+    <script>
+        // รับข้อมูล `code` จาก URL เมื่อ Google ส่งกลับมา
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+
+        if (authCode) {
+            // ส่ง code ไปยังเซิร์ฟเวอร์หรือประมวลผล token ต่อไป
+            fetch('https://oauth2.googleapis.com/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    code: authCode,
+                    client_id: '1076051245330-qst17q9bccr4tvdkh43v45fivulr3q5e.apps.googleusercontent.com',
+                    client_secret: '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',
+                    redirect_uri: 'https://chakphet999.github.io/callback',
+                    grant_type: 'authorization_code'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const accessToken = data.access_token;
+                
+                // เก็บ accessToken ใน LocalStorage
+                localStorage.setItem('accessToken', accessToken);
+
+                // Redirect ไปหน้าหลัก
+                window.location.href = "https://chakphet999.github.io";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.body.innerHTML = '<h3>Authentication failed. Unable to retrieve access token.</h3>';
+            });
+        } else {
+            document.body.innerHTML = '<h3>Authentication failed. No code found.</h3>';
+        }
+    </script>
+</body>
+</html>

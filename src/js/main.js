@@ -5,7 +5,7 @@ const closeModalButton = document.getElementById("closeModal");
 const saveExpenseButton = document.getElementById("saveExpense");
 
 // Spreadsheet ID ของคุณ
-const spreadsheetId = '1S8gjufLAVjbaKmQTaG4PHow9FyL6uLWfgkVyFY6WXCY';  // <-- ใส่ ID ของ Google Sheets ที่คุณสร้างไว้
+const spreadsheetId = '1l3PhkZika9epSSYIWW0dbKENY21n8eiL_6QpyXMD764';  // <-- ใส่ ID ของ Google Sheets ที่คุณสร้างไว้
 
 // Function สำหรับดึง user_id
 function getUserId(accessToken) {

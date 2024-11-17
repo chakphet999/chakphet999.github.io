@@ -20,21 +20,63 @@ function getUserId(accessToken) {
     });
 }
 
+// ฟังก์ชันตรวจสอบว่าแท็บของผู้ใช้มีอยู่หรือไม่
+async function checkAndCreateTab(userId, accessToken) {
+    const spreadsheetId = '1iEr8ktcz2B3yR37Eisc2m7vWTtchrBuXBJ1ypyrSNf8';
+    
+    // เรียกข้อมูลแท็บทั้งหมดในสเปรดชีต
+    const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?fields=sheets(properties(title))`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    
+    const data = await response.json();
+    const existingTabs = data.sheets.map(sheet => sheet.properties.title);
+
+    // ถ้าแท็บของผู้ใช้ยังไม่มีอยู่ ให้สร้างแท็บใหม่
+    if (!existingTabs.includes(userId)) {
+        const createTabRequest = {
+            requests: [
+                {
+                    addSheet: {
+                        properties: {
+                            title: userId
+                        }
+                    }
+                }
+            ]
+        };
+        
+        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(createTabRequest)
+        });
+    }
+}
+
+// ฟังก์ชันสำหรับเปิด modal
 openModalButton.addEventListener("click", () => {
     modal.style.display = "block";
 });
 
+// ฟังก์ชันสำหรับปิด modal
 closeModalButton.addEventListener("click", () => {
     modal.style.display = "none";
 });
 
+// ฟังก์ชันคลิกนอก modal เพื่อปิด
 window.addEventListener("click", (event) => {
     if (event.target === modal) {
         modal.style.display = "none";
     }
 });
 
-// บันทึกข้อมูลค่าใช้จ่ายไปยัง Google Sheets พร้อมกับ user_id
+// บันทึกข้อมูลค่าใช้จ่ายลงในแท็บของผู้ใช้
 saveExpenseButton.addEventListener("click", async () => {
     const expenseName = document.getElementById("expenseName").value;
     const amount = document.getElementById("amount").value;
@@ -54,11 +96,14 @@ saveExpenseButton.addEventListener("click", async () => {
         return;
     }
 
+    // ตรวจสอบและสร้างแท็บของผู้ใช้ (ถ้ายังไม่มี)
+    await checkAndCreateTab(userId, accessToken);
+
     // สร้างสถานะการจ่ายเงินเริ่มต้น (not_paid) สำหรับทุกเพื่อน
     const paymentStatus = new Array(friends.length).fill("not_paid").join(", ");
 
     // ส่งข้อมูลไปยัง Google Sheets API
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:append?valueInputOption=USER_ENTERED`, {
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${userId}!A1:append?valueInputOption=USER_ENTERED`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${accessToken}`,

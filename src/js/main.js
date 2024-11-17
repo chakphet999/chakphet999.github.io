@@ -22,7 +22,7 @@ function getUserId(accessToken) {
 
 // ฟังก์ชันตรวจสอบว่าแท็บของผู้ใช้มีอยู่หรือไม่
 async function checkAndCreateTab(userId, accessToken) {
-    const spreadsheetId = '1iEr8ktcz2B3yR37Eisc2m7vWTtchrBuXBJ1ypyrSNf8';
+    const spreadsheetId = '1l3PhkZika9epSSYIWW0dbKENY21n8eiL_6QpyXMD764';
     
     // เรียกข้อมูลแท็บทั้งหมดในสเปรดชีต
     const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?fields=sheets(properties(title))`, {

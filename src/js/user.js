@@ -70,7 +70,7 @@ function redirectToLogin() {
 
 // Function to fetch expenses for the logged-in user
 function fetchUserExpenses(userId, accessToken) {
-    const spreadsheetId = '1l3PhkZika9epSSYIWW0dbKENY21n8eiL_6QpyXMD764';  // <-- ใส่ ID ของ Google Sheets
+    const spreadsheetId = '1l3PhkZika9epSSYIWW0dbKENY21n8eiL_6QpyXMD764';
     const sheetName = userId;  // ใช้ userId เป็นชื่อแท็บ
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}`, {
         headers: { 'Authorization': `Bearer ${accessToken}` }
